@@ -62,19 +62,30 @@ class Game {
     this.paddleX = this.paddleXStart;
   }
 
-  // Detect when the ball hits a brick
+  // Detect when the edge of the ball hits the edge of a brick
   // Display message that player has won when all bricks have been hit
   collisionDetection() {
     for (let c = 0; c < this.bricks.columns; c += 1) {
       for (let r = 0; r < this.bricks.rows; r += 1) {
         const brick = this.bricks.bricks[c][r];
         if (brick.status === 1) {
-          if (
-            this.ball.x > brick.x
-              && this.ball.x < brick.x + this.brickWidth
-              && this.ball.y > brick.y
-              && this.ball.y < brick.y + this.brickHeight
-          ) {
+          // Calculate the closest point on the rectangle to the center of the circle
+          let closestX = this.ball.x;
+          let closestY = this.ball.y;
+          if (closestX < brick.x) {
+            closestX = brick.x;
+          } else if (closestX > brick.x + this.brickWidth) {
+            closestX = brick.x + this.brickWidth;
+          }
+          if (closestY < brick.y) {
+            closestY = brick.y;
+          } else if (closestY > brick.y + this.brickHeight) {
+            closestY = brick.y + this.brickHeight;
+          }
+          // Check if the distance between the center of the circle and the closest point
+          // on the rectangle is less than the radius of the circle
+          const distance = Math.sqrt((this.ball.x - closestX) ** 2 + (this.ball.y - closestY) ** 2);
+          if (distance < this.ball.radius) {
             this.ball.dy = -this.ball.dy;
             brick.status = 0;
             this.scoreText.value += 1;
@@ -148,9 +159,9 @@ class Game {
   }
 
   mouseMoveHandler(e) {
-    const relativeX = e.clientX - canvas.offsetLeft;
-    if (relativeX > 0 && relativeX < canvas.width) {
-      this.paddle.moveTo(relativeX - this.paddle.width / 2, paddleYStart);
+    const relativeX = e.clientX - this.canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < this.canvas.width) {
+      this.paddle.moveTo(relativeX - this.paddle.width / 2, this.paddleYStart);
     }
   }
 
