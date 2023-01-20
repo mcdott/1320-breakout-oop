@@ -19,10 +19,6 @@ const objectPrimaryColor = '#0095DD';
 const gameOverMessage = 'Game Over';
 const gameWonMessage = 'You win! Congratulations!';
 
-let rightPressed = false;
-let leftPressed = false;
-let brickCounter = 0;
-
 class Ball {
   constructor(x = 0, y = 0, dx = 2, dy = -2, radius = 10, color = 'red') {
     this.x = x;
@@ -111,9 +107,6 @@ class Bricks {
   }
 }
 
-const bricks = new Bricks(brickColumnCount, brickRowCount);
-// TODO score, lives, game
-
 class Paddle {
   constructor(x, y, width, height, color = 'red') {
     this.x = x;
@@ -142,8 +135,6 @@ class Paddle {
   }
 }
 
-const paddle = new Paddle(paddleXStart, paddleYStart, paddleWidth, paddleHeight, objectPrimaryColor)
-
 class GameText {
   constructor(text, x, y, color, font = '16px Arial') {
     this.text = text;
@@ -161,143 +152,144 @@ class GameText {
   }
 }
 
-const scoreText = new GameText('Score:', 8, 20);
-const livesText = new GameText('Lives: ', canvas.width - 65, 20);
-livesText.value = 3;
-
 class Game {
   constructor() {
+    this.ball = new Ball(0, 0, 2, -2, ballRadius, objectPrimaryColor);
+    // eslint-disable-next-line max-len
+    this.paddle = new Paddle(paddleXStart, paddleYStart, paddleWidth, paddleHeight, objectPrimaryColor);
+    this.bricks = new Bricks(brickColumnCount, brickRowCount);
+    this.scoreText = new GameText('Score:', 8, 20);
+    this.livesText = new GameText('Lives: ', canvas.width - 65, 20);
 
+    this.rightPressed = false;
+    this.leftPressed = false;
+
+    this.setup();
+    this.draw();
   }
-  
-  render(ctx) {
-  
+
+  setup() {
+    this.livesText.value = 3;
+    this.resetBallAndPaddle();
+
+    document.addEventListener('keydown', this.keyDownHandler.bind(this), false);
+    document.addEventListener('keyup', this.keyUpHandler.bind(this), false);
+    document.addEventListener('mousemove', this.mouseMoveHandler.bind(this), false);
   }
-}
-const ball = new Ball(0, 0, 2, -2, ballRadius, objectPrimaryColor);
 
-function resetBallAndPaddle() {
-  ball.x = canvas.width / 2;
-  ball.y = canvas.height - 30;
-  ball.dx = 2;
-  ball.dy = -2;
-  paddleX = paddleXStart;
-}
-
-resetBallAndPaddle();
-
-ctx.fillStyle = 'gray';
-ctx.fillRect(0, 0, canvas.width / 2, canvas.height);
-
-function keyDownHandler(e) {
-  if (e.key === 'Right' || e.key === 'ArrowRight') {
-    rightPressed = true;
-  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-    leftPressed = true;
+  resetBallAndPaddle() {
+    this.ball.x = canvas.width / 2;
+    this.ball.y = canvas.height - 30;
+    this.ball.dx = 2;
+    this.dy = -2;
+    this.paddleX = paddleXStart;
   }
-}
 
-function keyUpHandler(e) {
-  if (e.key === 'Right' || e.key === 'ArrowRight') {
-    rightPressed = false;
-  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-    leftPressed = false;
-  }
-}
-
-function mouseMoveHandler(e) {
-  const relativeX = e.clientX - canvas.offsetLeft;
-  if (relativeX > 0 && relativeX < canvas.width) {
-    paddle.moveTo(relativeX - paddle.width / 2, paddleYStart);
-  }
-}
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
-document.addEventListener('mousemove', mouseMoveHandler, false);
-
-function collisionDetection() {
-  for (let c = 0; c < bricks.columns; c += 1) {
-    for (let r = 0; r < bricks.rows; r += 1) {
-      const brick = bricks.bricks[c][r];
-      if (brick.status === 1) {
-        if (
-          ball.x > brick.x
-          && ball.x < brick.x + brickWidth
-          && ball.y > brick.y
-          && ball.y < brick.y + brickHeight
-        ) {
-          ball.dy = -ball.dy;
-          brick.status = 0;
-          scoreText.value += 1;
-          if (scoreText.value === bricks.rows * bricks.columns) {
-            // eslint-disable-next-line no-alert
-            alert(gameWonMessage);
-            document.location.reload();
+  collisionDetection() {
+    for (let c = 0; c < this.bricks.columns; c += 1) {
+      for (let r = 0; r < this.bricks.rows; r += 1) {
+        const brick = this.bricks.bricks[c][r];
+        if (brick.status === 1) {
+          if (
+            this.ball.x > brick.x
+            && this.ball.x < brick.x + brickWidth
+            && this.ball.y > brick.y
+            && this.ball.y < brick.y + brickHeight
+          ) {
+            this.ball.dy = -this.ball.dy;
+            brick.status = 0;
+            this.scoreText.value += 1;
+            if (this.scoreText.value === this.bricks.rows * this.bricks.columns) {
+              // eslint-disable-next-line no-alert
+              alert(gameWonMessage);
+              document.location.reload();
+            }
           }
         }
       }
     }
   }
-}
 
-function movePaddle() {
-  if (rightPressed && paddle.x < canvas.width - paddle.width) {
-    paddle.moveBy(7, 0);
-  } else if (leftPressed && paddle.x > 0) {
-    paddle.moveBy(-7, 0);
-  }
-}
-
-function collisionWithCanvasEdgesAndPaddle() {
-// Rebound the ball off the left and right sides of the canvas
-  if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
-    ball.dx = -ball.dx;
+  movePaddle() {
+    if (this.rightPressed && this.paddle.x < canvas.width - this.paddle.width) {
+      this.paddle.moveBy(7, 0);
+    } else if (this.leftPressed && this.paddle.x > 0) {
+      this.paddle.moveBy(-7, 0);
+    }
   }
 
-  // Rebound the ball off the top of the canvas, hit the paddle, or hit the bottom of the canvas
-  if (ball.y + ball.dy < ballRadius) {
-    // rebound off the top
-    ball.dy = -ball.dy;
-  } else if (ball.y + ball.dy > canvas.height - ballRadius) {
-    // Reach the bottom
-    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
-      // Rebound off the paddle
-      ball.dy = -ball.dy;
-    } else {
-      // lose one life
-      livesText.value -= 1;
-      if (livesText.value < 1) {
-        // Game over
-        // eslint-disable-next-line no-alert
-        alert(gameOverMessage);
-        document.location.reload();
+  collisionWithCanvasEdgesAndPaddle() {
+    // Rebound the ball off the left and right sides of the canvas
+    if (this.ball.x + this.ball.dx > canvas.width - this.ball.radius
+        || this.ball.x + this.ball.dx < this.ball.radius) {
+      this.ball.dx = -this.ball.dx;
+    }
+    // Rebound the this.ball off the top of the canvas, hit the paddle,
+    // or hit the bottom of the canvas
+    if (this.ball.y + this.ball.dy < this.ball.radius) {
+      // rebound off the top
+      this.ball.dy = -this.ball.dy;
+    } else if (this.ball.y + this.ball.dy > canvas.height - this.ball.radius) {
+      // Reach the bottom
+      if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
+        // Rebound off the this.paddle
+        this.ball.dy = -this.ball.dy;
       } else {
-        // Start over after ball hits the bottom
-        resetBallAndPaddle();
+        // lose one life
+        this.livesText.value -= 1;
+        if (this.livesText.value < 1) {
+          // Game over
+          // eslint-disable-next-line no-alert
+          alert(gameOverMessage);
+          document.location.reload();
+        } else {
+          // Start over after this.ball hits the bottom
+          this.resetBallAndPaddle();
+        }
       }
     }
   }
+
+  keyDownHandler(e) {
+    if (e.key === 'Right' || e.key === 'ArrowRight') {
+      this.rightPressed = true;
+    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+      this.leftPressed = true;
+    }
+  }
+
+  keyUpHandler(e) {
+    if (e.key === 'Right' || e.key === 'ArrowRight') {
+      this.rightPressed = false;
+    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+      this.leftPressed = false;
+    }
+  }
+
+  mouseMoveHandler(e) {
+    const relativeX = e.clientX - canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < canvas.width) {
+      this.paddle.moveTo(relativeX - this.paddle.width / 2, paddleYStart);
+    }
+  }
+
+  // Game loop
+  draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Call helper functions
+    this.bricks.render(ctx);
+    this.ball.render(ctx);
+    this.paddle.render(ctx);
+    this.scoreText.render(ctx);
+    this.livesText.render(ctx);
+    this.collisionDetection();
+    this.ball.move();
+    this.movePaddle();
+    this.collisionWithCanvasEdgesAndPaddle();
+
+    // redraw the screen
+    requestAnimationFrame(this.draw.bind(this));
+  }
 }
 
-// ?******
-ctx.fillStyle = 'gray';
-ctx.fillRect(0, 0, canvas.width / 2, canvas.height);
-
-// Game loop
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // Call helper functions
-  bricks.render(ctx);
-  ball.render(ctx);
-  paddle.render(ctx);
-  scoreText.render(ctx);
-  livesText.render(ctx);
-  collisionDetection();
-  ball.move();
-  movePaddle();
-  collisionWithCanvasEdgesAndPaddle();
-
-  requestAnimationFrame(draw);
-}
-
-draw();
+const game = new Game();
