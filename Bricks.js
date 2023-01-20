@@ -25,6 +25,7 @@ class Bricks {
     }
   }
 
+  // Draws the rows of active bricks on the screen
   render(ctx) {
     for (let c = 0; c < this.columns; c += 1) {
       for (let r = 0; r < this.rows; r += 1) {

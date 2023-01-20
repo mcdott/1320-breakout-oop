@@ -9,11 +9,13 @@ class Ball {
     this.PI2 = Math.PI * 2;
   }
 
+  // Moves the ball by updating positional x and y values
   move() {
     this.x += this.dx;
     this.y += this.dy;
   }
 
+  // Draws the ball on the screen
   render(ctx) {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, this.PI2);

@@ -43,6 +43,8 @@ class Game {
     this.draw();
   }
 
+  // Set ball, paddle, and lives game staring positions/values
+  // Set up listeners for keyboard and mouse events
   setup() {
     this.livesText.value = 3;
     this.resetBallAndPaddle();
@@ -60,6 +62,8 @@ class Game {
     this.paddleX = this.paddleXStart;
   }
 
+  // Detect when the ball hits a brick
+  // Display message that player has won when all bricks have been hit
   collisionDetection() {
     for (let c = 0; c < this.bricks.columns; c += 1) {
       for (let r = 0; r < this.bricks.rows; r += 1) {
@@ -93,6 +97,8 @@ class Game {
     }
   }
 
+  // Rebound when the ball hits the edges of the canvas or the paddle
+  // Keep track of lives and display message at end of game
   collisionWithCanvasEdgesAndPaddle() {
     // Rebound the ball off the left and right sides of the canvas
     if (this.ball.x + this.ball.dx > this.canvas.width - this.ball.radius

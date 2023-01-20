@@ -7,16 +7,19 @@ class Paddle {
     this.color = color;
   }
 
+  // Moves the paddle by updating positional x and y values
   moveBy(dx, dy) {
     this.x += dx;
     this.y += dy;
   }
 
+  // Moves the ball to an (x, y) position
   moveTo(x, y) {
     this.x = x;
     this.y = y;
   }
 
+  // Draws the paddle on the screen
   render(ctx) {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);

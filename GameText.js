@@ -8,6 +8,7 @@ class GameText {
     this.font = font;
   }
 
+  // Draws text on the screen
   render(ctx) {
     ctx.font = this.font;
     ctx.fillStyle = this.color;
