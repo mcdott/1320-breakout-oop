@@ -21,9 +21,7 @@ const gameWonMessage = 'You win! Congratulations!';
 
 let rightPressed = false;
 let leftPressed = false;
-let score = 0;
 let brickCounter = 0;
-let lives = 3;
 
 class Ball {
   constructor(x = 0, y = 0, dx = 2, dy = -2, radius = 10, color = 'red') {
@@ -146,37 +144,36 @@ class Paddle {
 
 const paddle = new Paddle(paddleXStart, paddleYStart, paddleWidth, paddleHeight, objectPrimaryColor)
 
-// class Score {
-//   constructor() {
+class GameText {
+  constructor(text, x, y, color, font = '16px Arial') {
+    this.text = text;
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.value = 0;
+    this.font = font;
+  }
 
-//   }
+  render(ctx) {
+    ctx.font = this.font;
+    ctx.fillStyle = this.color;
+    ctx.fillText(`${this.text} ${this.value}`, this.x, this.y);
+  }
+}
 
-//   render(ctx) {
-//     ctx.font = '16px Arial';
-//     ctx.fillStyle = objectPrimaryColor;
-//     ctx.fillText(`Score: ${score}`, 8, 20);
-//   }
-// }
+const scoreText = new GameText('Score:', 8, 20);
+const livesText = new GameText('Lives: ', canvas.width - 65, 20);
+livesText.value = 3;
 
-// class Lives {
-//   constructor() {
- 
-//   }
+class Game {
+  constructor() {
 
-//   render(ctx) {
-
-//   }
-// }
-
-// class Game {
-//   constructor() {
-
-//   }
+  }
   
-//   render(ctx) {
+  render(ctx) {
   
-//   }
-// }
+  }
+}
 const ball = new Ball(0, 0, 2, -2, ballRadius, objectPrimaryColor);
 
 function resetBallAndPaddle() {
@@ -231,10 +228,8 @@ function collisionDetection() {
         ) {
           ball.dy = -ball.dy;
           brick.status = 0;
-          //   score += brick.points;
-          score += 10;
-          brickCounter += 1;
-          if (brickCounter === bricks.rows * bricks.columns) {
+          scoreText.value += 1;
+          if (scoreText.value === bricks.rows * bricks.columns) {
             // eslint-disable-next-line no-alert
             alert(gameWonMessage);
             document.location.reload();
@@ -244,20 +239,6 @@ function collisionDetection() {
     }
   }
 }
-
-function drawLives() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = objectPrimaryColor;
-  ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-}
-
-// function resetBallAndPaddle() {
-//   ball.x = canvas.width / 2;
-//   ball.y = canvas.height - 30;
-//   ball.dx = 2;
-//   ball.dy = -2;
-//   paddleX = paddleXStart;
-// }
 
 function movePaddle() {
   if (rightPressed && paddle.x < canvas.width - paddle.width) {
@@ -284,8 +265,8 @@ function collisionWithCanvasEdgesAndPaddle() {
       ball.dy = -ball.dy;
     } else {
       // lose one life
-      lives -= 1;
-      if (!lives) {
+      livesText.value -= 1;
+      if (livesText.value < 1) {
         // Game over
         // eslint-disable-next-line no-alert
         alert(gameOverMessage);
@@ -309,8 +290,8 @@ function draw() {
   bricks.render(ctx);
   ball.render(ctx);
   paddle.render(ctx);
-//   score.render();
-  drawLives();
+  scoreText.render(ctx);
+  livesText.render(ctx);
   collisionDetection();
   ball.move();
   movePaddle();
