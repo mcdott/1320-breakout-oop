@@ -16,8 +16,10 @@ class Game {
     this.paddleXStart = (this.canvas.width - this.paddleWidth) / 2;
     this.paddleYStart = this.canvas.height - this.paddleHeight;
     this.objectPrimaryColor = '#0095DD';
-    this.gameOverMessage = 'Game Over';
-    this.gameWonMessage = 'You win! Congratulations!';
+    this.gameWon = false;
+    this.gameWonMessage = document.getElementById('game-won-message-overlay');
+    this.gameOverMessage = document.getElementById('game-over-message-overlay');
+    this.playAgainButton = document.getElementById('play-again-button');
 
     this.ball = new Ball(0, 0, 2, -2, this.ballRadius, this.objectPrimaryColor);
     // eslint-disable-next-line max-len
@@ -52,6 +54,13 @@ class Game {
     document.addEventListener('keydown', this.keyDownHandler.bind(this), false);
     document.addEventListener('keyup', this.keyUpHandler.bind(this), false);
     document.addEventListener('mousemove', this.mouseMoveHandler.bind(this), false);
+    this.playAgainButton.addEventListener('click', () => {
+      this.gameWon = false;
+      this.gameWonMessage.style.display = 'none';
+      this.gameOverMessage.style.display = 'none';
+      this.setup();
+      this.draw();
+    });
   }
 
   resetBallAndPaddle() {
@@ -65,6 +74,9 @@ class Game {
   // Detect when the edge of the ball hits the edge of a brick
   // Display message that player has won when all bricks have been hit
   collisionDetection() {
+    if (this.gameWon) {
+      return;
+    }
     for (let c = 0; c < this.bricks.columns; c += 1) {
       for (let r = 0; r < this.bricks.rows; r += 1) {
         const brick = this.bricks.bricks[c][r];
@@ -90,9 +102,8 @@ class Game {
             brick.status = 0;
             this.scoreText.value += 1;
             if (this.scoreText.value === this.bricks.rows * this.bricks.columns) {
-              // eslint-disable-next-line no-alert
-              alert(this.gameWonMessage);
-              document.location.reload();
+              this.gameWon = true;
+              this.gameWonMessage.style.display = 'block';
             }
           }
         }
@@ -130,9 +141,7 @@ class Game {
         // lose one life
         this.livesText.value -= 1;
         if (this.livesText.value < 1) {
-          // Game over
-          // eslint-disable-next-line no-alert
-          alert(this.gameOverMessage);
+          this.gameOverMessage.style.display = 'block';
           document.location.reload();
         } else {
           // Start over after this.ball hits the bottom
@@ -180,6 +189,8 @@ class Game {
     this.collisionWithCanvasEdgesAndPaddle();
 
     // redraw the screen
-    requestAnimationFrame(this.draw.bind(this));
+    if (!this.gameWon) {
+      requestAnimationFrame(this.draw.bind(this));
+    }
   }
 }

@@ -12,15 +12,51 @@
         background: #eee;
         display: block;
         margin: 0 auto;
+        width: 100%;
+        height: 100%;
       }
-      #layer1 {
+      body {
+        width: 100%;
+      }
+
+      .canvas-container {
+        position: relative;
+        width: 480px;
+        height: 320px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+     }
+
+      .message-overlay {
         position: absolute;
-        pointer-events: none;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: x-large;
       }
+
     </style>
   </head>
   <body>
-    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <div class="canvas-container">
+        <canvas id="myCanvas" width="480" height="320"></canvas>
+        <div id="game-won-message-overlay" class="message-overlay" style="display: none">
+            <p>You win!</p>
+            <button id="play-again-button">Play Again</button>
+        </div>
+        <div id="game-over-message-overlay" class="message-overlay" style="display: none">
+            <p>Game Over</p>
+            <button id="play-again-button">Play Again</button>
+        </div>
+    </div>
+    
 
     <script src="Ball.js"></script>
     <script src="Brick.js"></script>
