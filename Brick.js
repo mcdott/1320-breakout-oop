@@ -2,10 +2,10 @@ class Brick {
   constructor(x, y, width, height, color) {
     this.x = x;
     this.y = y;
-    this.status = 1;
     this.width = width;
     this.height = height;
     this.color = color;
+    this.status = 1;
   }
 
   // Draws a brick on the screen

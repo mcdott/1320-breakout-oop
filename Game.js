@@ -19,7 +19,8 @@ class Game {
     this.gameWon = false;
     this.gameWonMessage = document.getElementById('game-won-message-overlay');
     this.gameOverMessage = document.getElementById('game-over-message-overlay');
-    this.playAgainButton = document.getElementById('play-again-button');
+    this.winPlayAgainButton = document.getElementById('win-play-again-button');
+    this.losePlayAgainButton = document.getElementById('lose-play-again-button');
 
     this.ball = new Ball(0, 0, 2, -2, this.ballRadius, this.objectPrimaryColor);
     // eslint-disable-next-line max-len
@@ -42,25 +43,39 @@ class Game {
     this.leftPressed = false;
 
     this.setup();
+    this.winPlayAgainButton.addEventListener('click', () => {
+      this.gameWon = false;
+      this.setup();
+      this.draw();
+      this.gameWonMessage.style.display = 'none';
+    });
+    this.losePlayAgainButton.addEventListener('click', () => {
+      this.gameWon = false;
+      this.setup();
+      this.draw();
+      this.gameOverMessage.style.display = 'none';
+    });
     this.draw();
   }
 
-  // Set ball, paddle, and lives game staring positions/values
+  // Set ball, paddle, brick status, and lives game staring positions/values
   // Set up listeners for keyboard and mouse events
   setup() {
     this.livesText.value = 3;
     this.resetBallAndPaddle();
+    this.resetBricksStatus();
 
     document.addEventListener('keydown', this.keyDownHandler.bind(this), false);
     document.addEventListener('keyup', this.keyUpHandler.bind(this), false);
     document.addEventListener('mousemove', this.mouseMoveHandler.bind(this), false);
-    this.playAgainButton.addEventListener('click', () => {
-      this.gameWon = false;
-      this.gameWonMessage.style.display = 'none';
-      this.gameOverMessage.style.display = 'none';
-      this.setup();
-      this.draw();
-    });
+  }
+
+  resetBricksStatus() {
+    for (let c = 0; c < this.columns; c += 1) {
+      for (let r = 0; r < this.rows; r += 1) {
+        this.bricks[c][r].status = 1;
+      }
+    }
   }
 
   resetBallAndPaddle() {
@@ -74,9 +89,7 @@ class Game {
   // Detect when the edge of the ball hits the edge of a brick
   // Display message that player has won when all bricks have been hit
   collisionDetection() {
-    if (this.gameWon) {
-      return;
-    }
+    if (this.gameWon) return;
     for (let c = 0; c < this.bricks.columns; c += 1) {
       for (let r = 0; r < this.bricks.rows; r += 1) {
         const brick = this.bricks.bricks[c][r];
@@ -101,6 +114,8 @@ class Game {
             this.ball.dy = -this.ball.dy;
             brick.status = 0;
             this.scoreText.value += 1;
+            // If the score is equal to the number of bricks i.e. all brick have been hit,
+            // display the game won message
             if (this.scoreText.value === this.bricks.rows * this.bricks.columns) {
               this.gameWon = true;
               this.gameWonMessage.style.display = 'block';
@@ -138,11 +153,11 @@ class Game {
         // Rebound off the this.paddle
         this.ball.dy = -this.ball.dy;
       } else {
-        // lose one life
+        // Lose one life
         this.livesText.value -= 1;
+        // If there are no remaining lives, display game over message
         if (this.livesText.value < 1) {
           this.gameOverMessage.style.display = 'block';
-          document.location.reload();
         } else {
           // Start over after this.ball hits the bottom
           this.resetBallAndPaddle();
