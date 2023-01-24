@@ -21,7 +21,7 @@ class Game {
 
     this.ball = new Ball(0, 0, 2, -2, this.ballRadius, this.objectPrimaryColor);
     // eslint-disable-next-line max-len
-    this.paddle = new Paddle(this.paddleXStart, this.paddleYStart, this.paddleWidth, this.paddleHeight, this.objectPrimaryColor);
+    this.paddle = new Sprite(this.paddleXStart, this.paddleYStart, this.paddleWidth, this.paddleHeight, this.objectPrimaryColor);
     this.bricks = new Bricks({
       columns: this.brickColumnCount,
       rows: this.brickRowCount,
