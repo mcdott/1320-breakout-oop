@@ -33,8 +33,8 @@ class Game {
       color: this.objectPrimaryColor,
     });
 
-    this.scoreText = new GameText('Score:', 8, 20);
-    this.livesText = new GameText('Lives: ', this.canvas.width - 65, 20);
+    this.scoreText = new GameText('Score:', 8, 20, this.objectPrimaryColor);
+    this.livesText = new GameText('Lives: ', this.canvas.width - 65, 20, this.objectPrimaryColor);
 
     this.rightPressed = false;
     this.leftPressed = false;
