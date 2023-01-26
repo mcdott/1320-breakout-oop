@@ -1,7 +1,7 @@
 class GameText extends Sprite {
   constructor(text, x, y, color, font = '16px Arial') {
     super(x, y, 0, 0, color);
-    
+
     this.text = text;
     this.value = 0;
     this.font = font;
