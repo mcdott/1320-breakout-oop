@@ -1,3 +1,8 @@
+import Sprite from './Sprite.js';
+import Ball from './Ball.js';
+import Bricks from './Bricks.js';
+import GameText from './GameText.js';
+
 class Game {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
@@ -183,3 +188,5 @@ class Game {
     requestAnimationFrame(this.draw.bind(this));
   }
 }
+
+export default Game;

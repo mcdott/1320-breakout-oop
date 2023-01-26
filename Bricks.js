@@ -1,3 +1,5 @@
+import Brick from './Brick.js';
+
 class Bricks {
   constructor(options) {
     this.columns = options.columns;
@@ -37,3 +39,5 @@ class Bricks {
     }
   }
 }
+
+export default Bricks;

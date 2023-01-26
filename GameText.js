@@ -1,3 +1,5 @@
+import Sprite from './Sprite.js';
+
 class GameText extends Sprite {
   constructor(text, x, y, color, font = '16px Arial') {
     super(x, y, 0, 0, color);
@@ -14,3 +16,5 @@ class GameText extends Sprite {
     ctx.fillText(`${this.text} ${this.value}`, this.x, this.y);
   }
 }
+
+export default GameText;
