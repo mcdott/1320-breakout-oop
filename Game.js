@@ -70,9 +70,10 @@ class Game {
   // Detect when the edge of the ball hits the edge of a brick
   // Display message that player has won when all bricks have been hit
   collisionDetection() {
-    for (let c = 0; c < this.bricks.columns; c += 1) {
-      for (let r = 0; r < this.bricks.rows; r += 1) {
-        const brick = this.bricks.bricks[c][r];
+    for (let c = 0; c < this.columns; c += 1) {
+      for (let r = 0; r < this.rows; r += 1) {
+        const index = r * this.columns + c;
+        const brick = this.bricks[index];
         if (brick.status === 1) {
           // Calculate the closest point on the rectangle to the center of the circle
           let closestX = this.ball.x;
@@ -94,7 +95,7 @@ class Game {
             this.ball.dy = -this.ball.dy;
             brick.status = 0;
             this.scoreText.value += 1;
-            if (this.scoreText.value === this.bricks.rows * this.bricks.columns) {
+            if (this.scoreText.value === this.rows * this.columns) {
               // eslint-disable-next-line no-alert
               alert(this.gameWonMessage);
               document.location.reload();
