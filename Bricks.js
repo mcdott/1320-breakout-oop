@@ -17,17 +17,6 @@ class Bricks {
 
   // Initializes the array of bricks
   init() {
-  //   for (let c = 0; c < this.columns; c += 1) {
-  //     this.bricks[c] = [];
-  //     for (let r = 0; r < this.rows; r += 1) {
-  //       const brickX = c * (this.width + this.padding) + this.offsetLeft;
-  //       const brickY = r * (this.height + this.padding) + this.offsetTop;
-  //       // eslint-disable-next-line max-len
-  //       this.bricks[c][r] = new Brick(brickX, brickY, this.width, this.height, this.color);
-  //     }
-  //   }
-  // }
-
     this.bricks = [];
 
     // Create the bricks

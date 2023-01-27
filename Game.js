@@ -67,39 +67,38 @@ class Game {
     this.paddleX = this.paddleXStart;
   }
 
-  // Detect when the edge of the ball hits the edge of a brick
+  // Determine if the edge of the ball hits the edge of a brick
+  rectangleCollision(brick) {
+    let collision = false;
+    const ballRight = this.ball.x + this.ball.radius;
+    const ballLeft = this.ball.x - this.ball.radius;
+    const ballTop = this.ball.y - this.ball.radius;
+    const ballBottom = this.ball.y + this.ball.radius;
+    const brickRight = brick.x + brick.width;
+    const brickLeft = brick.x;
+    const brickTop = brick.y;
+    const brickBottom = brick.y + brick.height;
+
+    if (ballRight > brickLeft && ballLeft < brickRight && ballTop < brickBottom
+      && ballBottom > brickTop) {
+      collision = true;
+    }
+    return collision;
+  }
+
   // Display message that player has won when all bricks have been hit
   collisionDetection() {
-    for (let c = 0; c < this.columns; c += 1) {
-      for (let r = 0; r < this.rows; r += 1) {
-        const index = r * this.columns + c;
-        const brick = this.bricks[index];
-        if (brick.status === 1) {
-          // Calculate the closest point on the rectangle to the center of the circle
-          let closestX = this.ball.x;
-          let closestY = this.ball.y;
-          if (closestX < brick.x) {
-            closestX = brick.x;
-          } else if (closestX > brick.x + this.brickWidth) {
-            closestX = brick.x + this.brickWidth;
-          }
-          if (closestY < brick.y) {
-            closestY = brick.y;
-          } else if (closestY > brick.y + this.brickHeight) {
-            closestY = brick.y + this.brickHeight;
-          }
-          // Check if the distance between the center of the circle and the closest point
-          // on the rectangle is less than the radius of the circle
-          const distance = Math.sqrt((this.ball.x - closestX) ** 2 + (this.ball.y - closestY) ** 2);
-          if (distance < this.ball.radius) {
-            this.ball.dy = -this.ball.dy;
-            brick.status = 0;
-            this.scoreText.value += 1;
-            if (this.scoreText.value === this.rows * this.columns) {
-              // eslint-disable-next-line no-alert
-              alert(this.gameWonMessage);
-              document.location.reload();
-            }
+    for (let i = 0; i < this.bricks.bricks.length; i += 1) {
+      const brick = this.bricks.bricks[i];
+      if (brick.status === 1) {
+        if (this.rectangleCollision(brick)) {
+          this.ball.dy = -this.ball.dy;
+          brick.status = 0;
+          this.scoreText.value += 1;
+          if (this.scoreText.value === this.bricks.length) {
+            // eslint-disable-next-line no-alert
+            alert(this.gameWonMessage);
+            document.location.reload();
           }
         }
       }
@@ -130,7 +129,7 @@ class Game {
     } else if (this.ball.y + this.ball.dy > this.canvas.height - this.ball.radius) {
       // Reach the bottom
       if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
-        // Rebound off the this.paddle
+        // Rebound off the paddle
         this.ball.dy = -this.ball.dy;
       } else {
         // lose one life
