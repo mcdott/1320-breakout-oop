@@ -1,7 +1,7 @@
-import Sprite from './Sprite.js';
-import Ball from './Ball.js';
-import Bricks from './Bricks.js';
-import GameText from './GameText.js';
+import Sprite from './Sprite';
+import Ball from './Ball';
+import Bricks from './Bricks';
+import GameText from './GameText';
 
 class Game {
   constructor(canvasId) {

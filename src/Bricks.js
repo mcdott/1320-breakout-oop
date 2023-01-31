@@ -1,4 +1,4 @@
-import Brick from './Brick.js';
+import Brick from './Brick';
 
 class Bricks {
   constructor(options) {

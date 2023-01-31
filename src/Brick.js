@@ -1,4 +1,4 @@
-import Sprite from './Sprite.js';
+import Sprite from './Sprite';
 
 class Brick extends Sprite {
   constructor(x, y, width, height, color) {
