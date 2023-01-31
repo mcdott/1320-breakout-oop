@@ -1,11 +1,37 @@
 import Sprite from './Sprite';
 import Ball from './Ball';
 import Bricks from './Bricks';
+import Brick from './Brick';
 import GameText from './GameText';
 
 class Game {
-  constructor(canvasId) {
-    this.canvas = document.getElementById(canvasId);
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  ballRadius: number;
+  paddleHeight: number;
+  paddleWidth: number;
+  brickRowCount: number;
+  brickColumnCount: number;
+  brickWidth: number;
+  brickHeight: number;
+  brickPadding: number;
+  brickOffsetTop: number;
+  brickOffsetLeft: number;
+  paddleXStart: number;
+  paddleYStart: number;
+  objectPrimaryColor: string;
+  gameOverMessage: string;
+  gameWonMessage: string;
+  ball: Ball;
+  paddle: Sprite;
+  bricks: Bricks;
+  scoreText: GameText;
+  livesText: GameText;
+  rightPressed: Boolean;
+  leftPressed: Boolean;
+
+  constructor(canvasId: string) {
+    this.canvas = <HTMLCanvasElement>document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d');
 
     this.ballRadius = 10;
@@ -63,12 +89,12 @@ class Game {
     this.ball.x = this.canvas.width / 2;
     this.ball.y = this.canvas.height - 30;
     this.ball.dx = 2;
-    this.dy = -2;
-    this.paddleX = this.paddleXStart;
+    this.ball.dy = -2;
+    this.paddle.x = this.paddleXStart;
   }
 
   // Determine if the edge of the ball hits the edge of a brick
-  rectangleCollision(brick) {
+  rectangleCollision(brick: Brick) {
     let collision = false;
     const ballRight = this.ball.x + this.ball.radius;
     const ballLeft = this.ball.x - this.ball.radius;
@@ -95,7 +121,7 @@ class Game {
           this.ball.dy = -this.ball.dy;
           brick.status = 0;
           this.scoreText.value += 1;
-          if (this.scoreText.value === this.bricks.length) {
+          if (this.scoreText.value === this.bricks.bricks.length) {
             // eslint-disable-next-line no-alert
             alert(this.gameWonMessage);
             document.location.reload();
@@ -147,7 +173,7 @@ class Game {
     }
   }
 
-  keyDownHandler(e) {
+  keyDownHandler(e: KeyboardEvent) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
       this.rightPressed = true;
     } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
@@ -155,7 +181,7 @@ class Game {
     }
   }
 
-  keyUpHandler(e) {
+  keyUpHandler(e: KeyboardEvent) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
       this.rightPressed = false;
     } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
@@ -163,7 +189,7 @@ class Game {
     }
   }
 
-  mouseMoveHandler(e) {
+  mouseMoveHandler(e: MouseEvent) {
     const relativeX = e.clientX - this.canvas.offsetLeft;
     if (relativeX > 0 && relativeX < this.canvas.width) {
       this.paddle.moveTo(relativeX - this.paddle.width / 2, this.paddleYStart);

@@ -1,7 +1,10 @@
 import Sprite from './Sprite.js';
 
 class GameText extends Sprite {
-  constructor(text, x, y, color, font = '16px Arial') {
+  text: string;
+  value: number;
+  font: string;
+  constructor(text: string, x: number, y: number, color: string, font = '16px Arial') {
     super(x, y, 0, 0, color);
 
     this.text = text;
@@ -10,7 +13,7 @@ class GameText extends Sprite {
   }
 
   // Draws text on the screen
-  render(ctx) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.font = this.font;
     ctx.fillStyle = this.color;
     ctx.fillText(`${this.text} ${this.value}`, this.x, this.y);

@@ -1,7 +1,26 @@
 import Brick from './Brick';
 
 class Bricks {
-  constructor(options) {
+  columns: number;
+  rows: number;
+  width: number;
+  height: number;
+  padding: number;
+  offsetLeft: number;
+  offsetTop: number;
+  color: string;
+  bricks: Brick[];
+
+  constructor(options: { 
+    columns: number, 
+    rows: number, 
+    width: number, 
+    height: number, 
+    padding: number, 
+    offsetLeft: number, 
+    offsetTop: number, 
+    color: string 
+    }) {
     this.columns = options.columns;
     this.rows = options.rows;
     this.width = options.width;
@@ -36,7 +55,7 @@ class Bricks {
   }
 
   // Draws the rows of active bricks on the screen
-  render(ctx) {
+  render(ctx: CanvasRenderingContext2D) {
     for (let i = 0; i < this.bricks.length; i += 1) {
       const brick = this.bricks[i];
       if (brick.status === 1) {
